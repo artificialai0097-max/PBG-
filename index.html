@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123c35"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.json"><title>PBG Tracker</title>
+<style>
+:root{--ink:#172b28;--muted:#667773;--line:#dce6e2;--bg:#f3f7f5;--card:#fff;--green:#176b57;--pale:#e5f3ed;--amber:#fff1cf;--red:#ffe5e2;--blue:#e8f0ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{background:#123c35;color:white;padding:20px 16px 18px;position:sticky;top:0;z-index:3;box-shadow:0 3px 12px #0001}header .top{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:22px;margin:0}header p{margin:5px 0 0;color:#c7ddd6;font-size:13px}.wrap{max-width:1000px;margin:auto;padding:16px}.nav{display:flex;gap:8px;overflow:auto;margin:0 0 16px}.nav button{white-space:nowrap;border:1px solid var(--line);background:white;color:var(--ink);padding:10px 13px;border-radius:12px;font-weight:650}.nav button.active{background:var(--green);color:#fff;border-color:var(--green)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 2px 8px #123c3508}.stat .n{font-size:26px;font-weight:800;margin-top:3px}.muted{color:var(--muted);font-size:13px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:20px 0 10px}h2{font-size:18px;margin:0}h3{font-size:15px;margin:0 0 10px}.btn{border:0;border-radius:11px;padding:11px 14px;background:var(--green);color:white;font-weight:700;cursor:pointer}.btn.secondary{background:white;color:var(--green);border:1px solid var(--line)}.btn.danger{background:#a42c25}.btn.small{padding:7px 10px;font-size:13px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:block;font-size:13px;font-weight:700;margin:0 0 5px}input,select,textarea{font:inherit;width:100%;padding:11px 10px;border:1px solid #ccd9d4;border-radius:10px;background:white;color:var(--ink);min-width:0}textarea{min-height:75px;resize:vertical}.field{min-width:0}.full{grid-column:1/-1}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hidden{display:none!important}.record{padding:13px 0;border-bottom:1px solid var(--line)}.record:last-child{border-bottom:0}.recordtop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.record strong{overflow-wrap:anywhere}.pill{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:800;background:var(--pale);color:#176b57;white-space:nowrap}.pill.warn{background:var(--amber);color:#825b00}.pill.bad{background:var(--red);color:#a42c25}.pill.blue{background:var(--blue);color:#244e9a}.meta{font-size:13px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.notice{padding:11px 12px;border-radius:11px;background:#eef4f1;color:#36534b;font-size:13px;margin:10px 0}.notice.warn{background:var(--amber);color:#725100}.notice.bad{background:var(--red);color:#8c211b}.search{margin:0 0 10px}.empty{text-align:center;padding:25px 12px;color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 10px}.filepick{border:1.5px dashed #9ab8ad;border-radius:14px;padding:16px;text-align:center;background:#f9fcfa}.filepick input{margin-top:10px}.checkrow{display:flex;align-items:center;gap:8px;font-size:13px}.checkrow input{width:auto}.divider{height:1px;background:var(--line);margin:15px 0}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.formgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.wrap{padding:22px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1>🛡️ PBG Tracker</h1><p>Performance Bank Guarantee register · private to this device</p></div><button class="btn secondary small" id="installBtn" hidden>Install app</button></div></header>
+<main class="wrap">
+<div class="nav"><button class="active" data-tab="dashboard">Dashboard</button><button data-tab="register">PBG Register</button><button data-tab="add">Scan / Add PBG</button><button data-tab="backup">Backup & Settings</button></div>
+<section id="dashboard">
+<div class="grid">
+<div class="stat"><div class="muted">Total PBGs</div><div class="n" id="sTotal">0</div></div>
+<div class="stat"><div class="muted">Active / Valid</div><div class="n" id="sActive">0</div></div>
+<div class="stat"><div class="muted">Expiring in 30 days</div><div class="n" id="sSoon">0</div></div>
+<div class="stat"><div class="muted">Expired / Claim period</div><div class="n" id="sExpired">0</div></div>
+</div>
+<div class="sectionhead"><h2>Attention required</h2><button class="btn secondary small" onclick="showTab('register')">View register</button></div>
+<div class="card" id="alerts"><div class="empty">No PBGs recorded yet. Add one or scan a document.</div></div>
+<div class="sectionhead"><h2>Recently added</h2><button class="btn small" onclick="showTab('add')">+ Add PBG</button></div>
+<div class="card" id="recent"><div class="empty">Your saved PBGs will appear here.</div></div>
+</section>
+<section id="register" class="hidden">
+<div class="sectionhead"><h2>PBG Register</h2><button class="btn small" onclick="showTab('add')">+ Add PBG</button></div>
+<input id="searchBox" class="search" placeholder="Search PBG, supplier, bank, GeM bid or contract…">
+<div class="toolbar"><select id="statusFilter" style="max-width:220px"><option value="">All statuses</option><option>Active</option><option>Expiring soon</option><option>Expired</option><option>Released</option><option>Invoked</option></select><button class="btn secondary small" onclick="exportCSV()">Export CSV</button></div>
+<div class="card" id="registerList" style="margin-top:12px"><div class="empty">No records.</div></div>
+</section>
+<section id="add" class="hidden">
+<div class="sectionhead"><h2 id="formTitle">Scan or add a PBG</h2></div>
+<div class="card">
+<div class="filepick"><strong>Scan a PBG PDF or photo</strong><div class="muted">OCR reads text and suggests fields. Verify every value against the original guarantee.</div><input id="scanFile" type="file" accept="application/pdf,image/*"></div>
+<div class="actions"><button class="btn" id="ocrBtn">Extract text & suggest fields</button><button class="btn secondary" id="clearFormBtn" type="button">Clear form</button></div>
+<div id="ocrStatus" class="notice hidden"></div>
+<div id="ocrPreview" class="hidden"><label>Extracted text (review source)</label><textarea id="rawText" rows="6" placeholder="Extracted text will appear here"></textarea><div class="actions"><button class="btn secondary small" id="suggestBtn">Re-detect fields from text</button></div></div>
+<div class="divider"></div>
+<form id="pbgForm">
+<input type="hidden" id="editId">
+<div class="formgrid">
+<div class="field"><label for="pbgNo">PBG / Guarantee No. *</label><input id="pbgNo" required placeholder="e.g. 036GT…"></div>
+<div class="field"><label for="supplier">Supplier / Contractor *</label><input id="supplier" required></div>
+<div class="field"><label for="bank">Issuing bank / branch</label><input id="bank"></div>
+<div class="field"><label for="amount">PBG amount (₹) *</label><input id="amount" required inputmode="decimal" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="contractValue">Contract value (₹)</label><input id="contractValue" inputmode="decimal" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="beneficiary">Beneficiary / department</label><input id="beneficiary" placeholder="e.g. GETCO"></div>
+<div class="field"><label for="gemBid">GeM Bid No.</label><input id="gemBid"></div>
+<div class="field"><label for="contractNo">Contract / PO No.</label><input id="contractNo"></div>
+<div class="field"><label for="issueDate">Issue date</label><input id="issueDate" type="date"></div>
+<div class="field"><label for="startDate">Effective / commencement date</label><input id="startDate" type="date"></div>
+<div class="field"><label for="expiryDate">Expiry date *</label><input id="expiryDate" required type="date"></div>
+<div class="field"><label for="claimDate">Claim / invocation deadline *</label><input id="claimDate" required type="date"></div>
+<div class="field"><label for="status">Status</label><select id="status"><option>Active</option><option>Released</option><option>Invoked</option></select></div>
+<div class="field"><label for="pbgType">Guarantee type</label><select id="pbgType"><option>Performance Bank Guarantee</option><option>Additional PBG</option><option>Security Deposit</option><option>Other</option></select></div>
+<div class="field full"><label for="remarks">Remarks / extension / amendment history</label><textarea id="remarks" placeholder="Record extension, amendment, release reference, etc."></textarea></div>
+<div class="field full"><label for="docName">Source document filename (optional)</label><input id="docName" placeholder="Original scanned PDF or image filename"></div>
+</div>
+<div class="notice warn">OCR is only a draft assistant. Dates, amount, guarantee number and claim deadline must be verified against the original PBG before saving. Claim deadline is not assumed to equal expiry date.</div>
+<div class="actions"><button class="btn" type="submit">Save PBG</button><button class="btn secondary" type="button" id="cancelEdit">Cancel</button></div>
+</form>
+</div>
+</section>
+<section id="backup" class="hidden">
+<div class="sectionhead"><h2>Backup & Settings</h2></div>
+<div class="card">
+<h3>Protect your records</h3><p class="muted">Records are stored in this browser on this device. Clearing browser data can erase them. Export backups regularly. This starter app does not sync between devices.</p>
+<div class="actions"><button class="btn" onclick="exportJSON()">Download JSON backup</button><label class="btn secondary" style="display:inline-flex;align-items:center;cursor:pointer">Restore JSON backup<input id="importJSON" type="file" accept="application/json,.json" hidden></label><button class="btn secondary" onclick="exportCSV()">Export CSV register</button></div>
+<div class="divider"></div><h3>Expiry alert settings</h3><p class="muted">In-app reminders are shown when you open the app. Browser push notifications require an installed/hosted app and browser permission; this file cannot guarantee background alerts while closed.</p>
+<div class="formgrid"><div class="field"><label for="alertDays">Reminder days before expiry (comma separated)</label><input id="alertDays" value="90,60,30,15,7,3,1"></div><div class="field"><label for="defaultBeneficiary">Default beneficiary (optional)</label><input id="defaultBeneficiary" placeholder="e.g. GETCO"></div></div>
+<div class="actions"><button class="btn" id="saveSettings">Save settings</button><button class="btn danger" id="deleteAll">Delete all records</button></div><div id="backupStatus" class="notice hidden"></div>
+</div>
+<div class="card" style="margin-top:12px"><h3>Free mobile-app setup</h3><ol><li>Keep this HTML file on your phone and open it in Chrome.</li><li>For reliable “Add to Home screen” installation, host the file as a static site (for example, a free GitHub Pages site) and open its HTTPS address in Chrome.</li><li>Use Chrome’s menu → <b>Add to Home screen</b> / <b>Install app</b>.</li></ol><p class="muted">This file is a local-first prototype. OCR libraries load from the internet the first time you scan; a scanned document is processed in your browser by the OCR library. Avoid uploading confidential guarantees to unapproved services.</p></div>
+</section>
+<footer>Local-first PBG Tracker · Keep regular backups · Always verify extracted fields</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $=id=>document.getElementById(id); const KEY='pbg_tracker_records_v1', SETKEY='pbg_tracker_settings_v1';
+let records=load(KEY,[]), settings=load(SETKEY,{alertDays:'90,60,30,15,7,3,1',defaultBeneficiary:''}), editing=null, deferredInstall=null;
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}}
+function save(){localStorage.setItem(KEY,JSON.stringify(records));render()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateFmt(s){if(!s)return 'Not entered';const d=new Date(s+'T00:00:00');return isNaN(d)?s:d.toLocaleDateString('en-GB')}
+function daysTo(s){if(!s)return null;return Math.ceil((new Date(s+'T00:00:00')-new Date(new Date().toDateString()))/86400000)}
+function money(v){return v===''||v==null?'—':Number(v).toLocaleString('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2})}
+function statusFor(r){if(r.status==='Released'||r.status==='Invoked')return r.status;const d=daysTo(r.expiryDate);if(d===null)return 'Needs date';if(d<0)return 'Expired';if(d<=30)return 'Expiring soon';return 'Active'}
+function pill(s){let cls=['Expired','Invoked'].includes(s)?'bad':['Expiring soon','Needs date'].includes(s)?'warn':s==='Released'?'blue':'';return `<span class="pill ${cls}">${esc(s)}</span>`}
+function card(r){const st=statusFor(r),d=daysTo(r.expiryDate);return `<div class="record"><div class="recordtop"><div><strong>${esc(r.pbgNo||'PBG number missing')}</strong><div class="meta">${esc(r.supplier||'Supplier missing')} · ${esc(r.bank||'Bank not entered')}</div></div>${pill(st)}</div><div class="meta">Amount: <b>${money(r.amount)}</b> · Expires: <b>${dateFmt(r.expiryDate)}</b>${d!==null&&r.status!=='Released'&&r.status!=='Invoked'?` · ${d<0?Math.abs(d)+' days overdue':d+' days left'}`:''}</div><div class="meta">GeM Bid: ${esc(r.gemBid||'—')} · Contract: ${esc(r.contractNo||'—')} · Claim deadline: ${dateFmt(r.claimDate)}</div><div class="actions"><button class="btn secondary small" onclick="editRecord('${r.id}')">Edit</button><button class="btn secondary small" onclick="viewRecord('${r.id}')">Details</button><button class="btn danger small" onclick="deleteRecord('${r.id}')">Delete</button></div></div>`}
+function render(){ $('sTotal').textContent=records.length;$('sActive').textContent=records.filter(r=>statusFor(r)==='Active').length;$('sSoon').textContent=records.filter(r=>statusFor(r)==='Expiring soon').length;$('sExpired').textContent=records.filter(r=>['Expired','Invoked'].includes(statusFor(r))).length;
+let attention=records.filter(r=>['Expiring soon','Expired','Needs date'].includes(statusFor(r))).sort((a,b)=>(daysTo(a.expiryDate)??9999)-(daysTo(b.expiryDate)??9999));
+$('alerts').innerHTML=attention.length?attention.map(card).join(''):'<div class="empty">No urgent PBG alerts.</div>';
+$('recent').innerHTML=records.length?[...records].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,4).map(card).join(''):'<div class="empty">Your saved PBGs will appear here.</div>';filterRecords();notifyDue()}
+function filterRecords(){let q=($('searchBox')?.value||'').toLowerCase(),f=$('statusFilter')?.value||'';let arr=records.filter(r=>JSON.stringify(r).toLowerCase().includes(q)&&(!f||statusFor(r)===f||r.status===f));$('registerList').innerHTML=arr.length?arr.map(card).join(''):'<div class="empty">No matching PBG records.</div>'}
+function notifyDue(){let days=(settings.alertDays||'90,60,30,15,7,3,1').split(',').map(x=>parseInt(x.trim())).filter(Number.isFinite);let hits=records.filter(r=>r.status!=='Released'&&r.status!=='Invoked'&&days.includes(daysTo(r.expiryDate)));if(hits.length && 'Notification'in window && Notification.permission==='granted' && !sessionStorage.getItem('pbgNotified')){new Notification('PBG Tracker',{body:`${hits.length} PBG(s) match your expiry reminder days.`});sessionStorage.setItem('pbgNotified','1')}}
+function showTab(tab){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));$(tab).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='add'&&!editing){}window.scrollTo(0,0)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+$('searchBox').addEventListener('input',filterRecords);$('statusFilter').addEventListener('change',filterRecords);
+const fields=['pbgNo','supplier','bank','amount','contractValue','beneficiary','gemBid','contractNo','issueDate','startDate','expiryDate','claimDate','status','pbgType','remarks','docName'];
+function clearForm(){ $('pbgForm').reset();$('editId').value='';editing=null;$('formTitle').textContent='Scan or add a PBG';$('ocrStatus').classList.add('hidden');$('ocrPreview').classList.add('hidden');$('rawText').value='';$('scanFile').value='';if(settings.defaultBeneficiary)$('beneficiary').value=settings.defaultBeneficiary}
+$('clearFormBtn').onclick=clearForm;$('cancelEdit').onclick=()=>{clearForm();showTab('register')};
+$('pbgForm').onsubmit=e=>{e.preventDefault();let obj={};fields.forEach(f=>obj[f]=$(f).value.trim());obj.amount=Number(obj.amount);obj.contractValue=obj.contractValue?Number(obj.contractValue):'';if(obj.claimDate&&obj.expiryDate&&obj.claimDate<obj.expiryDate)if(!confirm('Claim deadline is before expiry date. Save anyway after verifying the original?'))return;
+if(!obj.claimDate){alert('Please enter the claim / invocation deadline from the original PBG.');return}
+if(editing){records=records.map(r=>r.id===editing?{...r,...obj,updatedAt:Date.now()}:r)}else records.push({...obj,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),createdAt:Date.now(),updatedAt:Date.now()});save();clearForm();showTab('register');alert('PBG saved. Please retain the original document and a backup.')}
+function editRecord(id){let r=records.find(x=>x.id===id);if(!r)return;editing=id;fields.forEach(f=>$(f).value=r[f]??'');$('editId').value=id;$('formTitle').textContent='Edit PBG';showTab('add')}
+function viewRecord(id){let r=records.find(x=>x.id===id);if(r)alert(fields.map(f=>f+': '+(r[f]||'—')).join('\n')+'\nCalculated status: '+statusFor(r))}
+function deleteRecord(id){let r=records.find(x=>x.id===id);if(r&&confirm(`Delete PBG ${r.pbgNo}? Export a backup first if required.`)){records=records.filter(x=>x.id!==id);save()}}
+function exportJSON(){download('pbg-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),settings,records},null,2),'application/json')}
+function exportCSV(){const cols=['pbgNo','supplier','bank','amount','contractValue','beneficiary','gemBid','contractNo','issueDate','startDate','expiryDate','claimDate','status','pbgType','remarks','docName'];let csv=[cols.join(','),...records.map(r=>cols.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');download('pbg-register.csv','\ufeff'+csv,'text/csv;charset=utf-8')}
+function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('importJSON').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()),arr=Array.isArray(d)?d:d.records;if(!Array.isArray(arr))throw Error('No records array found');if(!confirm(`Import ${arr.length} records? Existing records with matching IDs will be replaced; others will be added.`))return;let map=new Map(records.map(r=>[r.id,r]));arr.forEach(r=>map.set(r.id||String(Date.now()+Math.random()),r));records=[...map.values()];if(d.settings)settings={...settings,...d.settings};localStorage.setItem(SETKEY,JSON.stringify(settings));save();alert('Backup restored.');}catch(err){alert('Could not restore backup: '+err.message)}e.target.value=''};
+$('saveSettings').onclick=()=>{settings.alertDays=$('alertDays').value;settings.defaultBeneficiary=$('defaultBeneficiary').value;localStorage.setItem(SETKEY,JSON.stringify(settings));$('backupStatus').textContent='Settings saved.';$('backupStatus').classList.remove('hidden');render()};
+$('deleteAll').onclick=()=>{if(confirm('Delete ALL PBG records from this browser? This cannot be undone unless you have a backup.')){if(confirm('Final confirmation: permanently delete all records?')){records=[];save()}}};
+function showMsg(t,bad=false){$('ocrStatus').textContent=t;$('ocrStatus').classList.remove('hidden','warn','bad');$('ocrStatus').classList.add(bad?'warn':'')}
+async function getText(file){if(file.type==='application/pdf'){if(!window.pdfjsLib)throw Error('PDF reader library could not load. Check your internet connection and retry.');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';let data=new Uint8Array(await file.arrayBuffer()),pdf=await pdfjsLib.getDocument({data}).promise,all='';for(let i=1;i<=Math.min(pdf.numPages,12);i++){let page=await pdf.getPage(i),txt=await page.getTextContent();all+=txt.items.map(x=>x.str).join(' ')+'\n';if(all.length>90000)break}if(all.trim().length>80)return all; // scanned PDF: OCR page images
+let ocr='';for(let i=1;i<=Math.min(pdf.numPages,5);i++){showMsg(`Scanned PDF detected. OCR page ${i} of ${Math.min(pdf.numPages,5)}…`);let page=await pdf.getPage(i),vp=page.getViewport({scale:1.6}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:ctx,viewport:vp}).promise;let out=await Tesseract.recognize(canvas,'eng');ocr+=out.data.text+'\n'}return ocr}
+if(!window.Tesseract)throw Error('OCR library could not load. Check internet connection and retry.');showMsg('Reading image with OCR…');let out=await Tesseract.recognize(file,'eng',{logger:m=>{if(m.status==='recognizing text')showMsg('OCR progress: '+Math.round(m.progress*100)+'%')}});return out.data.text}
+function first(text,patterns){for(let re of patterns){let m=text.match(re);if(m&&m[1])return m[1].trim().replace(/\s{2,}/g,' ') }return ''}
+function parseDate(s){if(!s)return '';s=s.trim().replace(/[.]/g,'/').replace(/-/g,'/');let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){let d=+m[1],mo=+m[2],y=+m[3];if(d>12){[d,mo]=[d,mo]}else if(mo>12){[d,mo]=[mo,d]}else return '';let dt=new Date(y,mo-1,d);if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`}m=s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;return ''}
+function detectFields(t){let text=t.replace(/\r/g,'\n');let no=first(text,[/(?:PBG|BG|Guarantee)\s*(?:No\.?|Number|Ref(?:erence)?)\s*[:#\-]?\s*([A-Z0-9\/\-]{7,})/i,/(?:Bank Guarantee No\.?)\s*[:#\-]?\s*([A-Z0-9\/\-]{7,})/i]);let amt=first(text,[/(?:₹|INR|Rs\.?)\s*([\d,]+(?:\.\d{1,2})?)/i,/(?:sum of|amount of|guarantee amount)\s*(?:₹|INR|Rs\.?)?\s*([\d,]+(?:\.\d{1,2})?)/i]);let bank=first(text,[/((?:HDFC|ICICI|SBI|State Bank of India|Bank of Baroda|Axis|Canara|Union Bank|Punjab National|Kotak|IDFC)[^\n,;]{0,60}(?:Bank|branch)?)/i]);let supplier=first(text,[/(?:Applicant|Seller|Contractor|Supplier|Beneficiary of guarantee)\s*[:\-]\s*([A-Z0-9&.,() \-]{4,100})/i]);let bid=first(text,[/(GEMC[-\/]?\d{8,})/i,/(GeM Bid(?:ding)? No\.?)\s*[:#\-]?\s*([A-Z0-9\/\-]{8,})/i]);if(bid.length>1&&bid.includes(' '))bid=bid.split(' ').pop();let dates=[...text.matchAll(/\b(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{4}|\d{4}[\/.-]\d{1,2}[\/.-]\d{1,2})\b/g)].map(m=>parseDate(m[1])).filter(Boolean);let unique=[...new Set(dates)];let expiry=first(text,[/(?:valid up to|valid until|valid till|expiry date|expires on|validity up to)\s*[:\-]?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{4})/i]);expiry=parseDate(expiry);let claim=first(text,[/(?:claim period up to|claim expiry|claim period till|claim by|invocation up to|claim deadline)\s*[:\-]?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{4})/i]);claim=parseDate(claim);let issue=first(text,[/(?:date of issue|issued on|issue date)\s*[:\-]?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{4})/i]);issue=parseDate(issue);let contract=first(text,[/(?:contract order|contract no\.?|PO No\.?|purchase order)\s*[:#\-]?\s*([A-Z0-9\/\-]{6,})/i]);let beneficiary=first(text,[/(?:in favour of|in favor of|beneficiary)\s*[:\-]?\s*([A-Z][A-Z0-9&.,() \-]{4,100})/i]);let found={pbgNo:no, supplier, bank, amount:amt?amt.replace(/,/g,''):'', gemBid:bid, contractNo:contract, beneficiary, issueDate:issue, expiryDate:expiry, claimDate:claim};let filled=0;for(let [k,v] of Object.entries(found)){if(v&&$(k)&&!$('editId').value){$(k).value=v;filled++}}if(!expiry&&unique.length>=2){showMsg(`Detected ${filled} field(s). Several dates found, but expiry/claim dates were not confidently identified. Select them manually.`,true)}else showMsg(`Suggested ${filled} field(s). Check each suggestion against the original PBG before saving.`,false)}
+$('ocrBtn').onclick=async()=>{let f=$('scanFile').files[0];if(!f){showMsg('Choose a PDF or image first.',true);return}try{$('ocrBtn').disabled=true;showTab('add');$('docName').value=f.name;let t=await getText(f);$('rawText').value=t;$('ocrPreview').classList.remove('hidden');detectFields(t)}catch(err){showMsg('Could not extract text: '+err.message,true)}finally{$('ocrBtn').disabled=false}};
+$('suggestBtn').onclick=()=>detectFields($('rawText').value);
+$('alertDays').value=settings.alertDays||'90,60,30,15,7,3,1';$('defaultBeneficiary').value=settings.defaultBeneficiary||'';if(settings.defaultBeneficiary)$('beneficiary').value=settings.defaultBeneficiary;render();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('installBtn').hidden=false});$('installBtn').onclick=async()=>{if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$('installBtn').hidden=true}else alert('For installation, open the hosted HTTPS app in Chrome and use menu → Add to Home screen.')}
+</script>
+</body></html>
